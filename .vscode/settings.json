@@ -1,0 +1,49 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    "files.exclude": {
+        "out": false // set this to true to hide the "out" folder with the compiled JS files
+    },
+    "search.exclude": {
+        "out": true // set this to false to include "out" folder in search results
+    },
+    // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
+    "typescript.tsc.autoDetect": "off",
+    "nuomi-vscode.config": {
+        "author": "nuomifans",
+        "autoHeader": true,
+        "ignore": [
+            "*.json",            # Ignore suffix name
+            "*.md",
+            "test.py",           # Ignore file
+            "test"               # Ignore dir
+        ]
+    },
+    "nuomi-vscode.variables": [
+        [
+            "assetPath",
+            "\\Assets\\Lua\\"
+        ],
+        [
+            "company",
+            "nuomi.studio"
+        ]
+    ],
+    "nuomi-vscode.templates": [
+        {
+            "language": "Lua",
+            "headerBegin": "--[[",
+            "headerPrefix": "-- ",
+            "headerEnd": "--]]",
+            "template": [
+                "@file: {{file}}",
+                "@author: {{author}}",
+                "@created: {{createdDate}}",
+                "@description: {{description}}",
+                "-----",
+                "@last-modified: {{lastModifiedDate}}",
+                "@modified by: {{author}}",
+                "-----",
+            ]
+        }
+    ]
+}
