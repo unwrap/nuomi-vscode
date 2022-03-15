@@ -342,19 +342,15 @@ export class FileHeaderWatcher {
             const templateConfig: ILangTemplateConfig = this.getTemplateConfig(wsConfig, doc.languageId, doc.fileName);
 
             let findBegin: boolean = false;
-            let beginLine: number = -1;
-            let endLine: number = -1;
             for (let i: number = 0; i < doc.lineCount; i++) {
                 const lineText: string = doc.lineAt(i).text;
                 if (lineText) {
                     if (!findBegin) {
                         if (lineText === templateConfig.headerBegin) {
                             findBegin = true;
-                            beginLine = i;
                         }
                     } else {
                         if (lineText === templateConfig.headerEnd) {
-                            endLine = i;
                             break;
                         }
                         if (lineText.indexOf("file") !== -1) {

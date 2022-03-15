@@ -22,7 +22,8 @@
   ],
   "activationEvents": [
     "onCommand:nuomi-vscode.insertFileHeader",
-    "onCommand:nuomi-vscode.insertChangeLog"
+    "onCommand:nuomi-vscode.insertChangeLog",
+    "onStartupFinished"
   ],
   "main": "./out/extension.js",
   "contributes": {
