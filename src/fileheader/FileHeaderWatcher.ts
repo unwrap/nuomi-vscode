@@ -57,6 +57,10 @@ artTemplate.defaults.imports.replace = function (value: string, searchValue: str
     return value.replace(new RegExp(escapeRegExp(searchValue), "g"), replaceValue);
 };
 
+artTemplate.defaults.imports.substring = function (value: string, start: number, end?: number) {
+    return value.substring(start, end);
+};
+
 artTemplate.defaults.imports.dateformat = function (value: string, format: string) {
     return moment(value).format(format);
 };
@@ -142,9 +146,11 @@ export class FileHeaderWatcher {
 
         let authorName: string = config.hasOwnProperty("author") ? config.author : await this.getAuthorName();
 
-        const headerComment: string = this.mergeTemplate(templateConfig);
+        let headerComment: string = this.mergeTemplate(templateConfig);
+        if (templateConfig.body) {
+            headerComment += templateConfig.body.join("\n");
+        }
         let ret = this.doArtTemplateRender(headerComment, authorName, editor, wsConfig, templateConfig, config);
-        ret += "\n";
 
         editor.edit(function (editObj) {
             editObj.insert(new Position(0, 0), ret);
@@ -595,6 +601,7 @@ export class FileHeaderWatcher {
             templates.push("{{headerPrefix}}");
         }
         templates.push("{{headerEnd}}");
+        templates.push("");
         return templates.join("\n");
     }
 

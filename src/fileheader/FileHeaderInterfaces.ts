@@ -45,6 +45,7 @@ export interface ILangConfig extends IMappableLanguage {
 
 export interface ILangTemplateConfig extends ILangConfig {
     template?: Array<string>;
+    body?: Array<string>;
 }
 
 export type ITemplateConfigList = Array<ILangTemplateConfig>;

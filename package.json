@@ -132,6 +132,13 @@
                   "@Copyright (c) {{year}} {{company}}",
                   "-----"
                 ]
+              },
+              "body": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "default": []
               }
             }
           }

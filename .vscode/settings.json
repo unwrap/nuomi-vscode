@@ -12,10 +12,10 @@
         "author": "nuomifans",
         "autoHeader": true,
         "ignore": [
-            "*.json",            # Ignore suffix name
+            "*.json",
             "*.md",
-            "test.py",           # Ignore file
-            "test"               # Ignore dir
+            "test.py",
+            "test"
         ]
     },
     "nuomi-vscode.variables": [
@@ -35,7 +35,7 @@
             "headerPrefix": "-- ",
             "headerEnd": "--]]",
             "template": [
-                "@file: {{file}}",
+                "@file: {{file | replace workspaceFolder | replace assetPath | replace '.lua' | substring 1 | replace pathSeparator '.'}}",
                 "@author: {{author}}",
                 "@created: {{createdDate}}",
                 "@description: {{description}}",
@@ -43,6 +43,20 @@
                 "@last-modified: {{lastModifiedDate}}",
                 "@modified by: {{author}}",
                 "-----",
+            ],
+            "body": [
+                "local strClassName = \"{{file | replace workspaceFolder | replace assetPath | replace '.lua' | substring 1 | replace pathSeparator '.'}}\"",
+                "local {{fileBasenameNoExtension}} = lua_global(strClassName, lua_class(strClassName))",
+                "",
+                "function {{fileBasenameNoExtension}}:ctor()",
+                "",
+                "end",
+                "",
+                "function {{fileBasenameNoExtension}}:Start()",
+                "",
+                "end",
+                "",
+                "return {{fileBasenameNoExtension}}",
             ]
         }
     ]
