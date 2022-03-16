@@ -4,7 +4,7 @@
  *  @created: 2022-03-09 01:19:39
  *  @description: 插入文件头部信息。
  *  -----
- *  @last-modified: 2022-03-13 22:37:19
+ *  @last-modified: 2022-03-16 23:31:13
  *  @modified: by nuomifans
  *  -----
  *  @Copyright (c) 2022 nuomi.studio
@@ -147,9 +147,12 @@ export class FileHeaderWatcher {
         let authorName: string = config.hasOwnProperty("author") ? config.author : await this.getAuthorName();
 
         let headerComment: string = this.mergeTemplate(templateConfig);
-        if (templateConfig.body) {
-            headerComment += templateConfig.body.join("\n");
+        if (this.fileIsNew(editor.document.fileName)) {
+            if (templateConfig.body) {
+                headerComment += templateConfig.body.join("\n");
+            }
         }
+
         let ret = this.doArtTemplateRender(headerComment, authorName, editor, wsConfig, templateConfig, config);
 
         editor.edit(function (editObj) {
