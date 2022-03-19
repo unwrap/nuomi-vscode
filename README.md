@@ -14,6 +14,9 @@ nuomi-vscode是一款VSCode插件，用于自动插入文件头部信息。
 插入修改log
 + ctrl-alt-C ctrl-alt-C
 
+插入body(需要在settings配置body模板)
++ ctrl-alt-B ctrl-alt-B
+
 ### 配置
 
 **一般情况下，并不需要额外的配置。**如有需要，也可以通过配置实现定制化的文件头部信息。
@@ -60,6 +63,20 @@ settings.json设置如下：
             "-----",
             "@Copyright (c) {{year}} {{company}}",
             "-----",
+        ],
+        "body": [
+            "local strClassName = \"{{file | replace workspaceFolder | replace assetPath | replace '.lua' | replace pathSeparator '.'}}\"",
+            "local {{fileBasenameNoExtension}} = lua_class(strClassName)",
+            "",
+            "function {{fileBasenameNoExtension}}:ctor()",
+            "",
+            "end",
+            "",
+            "function {{fileBasenameNoExtension}}:Start()",
+            "",
+            "end",
+            "",
+            "return {{fileBasenameNoExtension}}",
         ]
     }
 ],

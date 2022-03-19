@@ -4,7 +4,7 @@
  *  @created: 2022-03-09 01:19:39
  *  @description: 插入文件头部信息。
  *  -----
- *  @last-modified: 2022-03-16 23:31:13
+ *  @last-modified: 2022-03-19 10:07:21
  *  @modified: by nuomifans
  *  -----
  *  @Copyright (c) 2022 nuomi.studio
@@ -88,6 +88,10 @@ export class FileHeaderWatcher {
             {
                 name: FileHeaderConst.CHANGE_LOG_INSERT_COMMAND,
                 handler: this.insertChangeLog.bind(this),
+            },
+            {
+                name: FileHeaderConst.FILE_BODY_INSERT_COMMAND,
+                handler: this.insertFileBody.bind(this),
             }
         ];
     }
@@ -306,6 +310,71 @@ export class FileHeaderWatcher {
                 edit.insert(editor.selection.active, ret);
             });
         }
+    }
+
+    private async insertFileBody() {
+        const editor: TextEditor = window.activeTextEditor;
+        if (!editor) {
+            window.showErrorMessage('nuomi-vscode requires an active document.');
+            return;
+        }
+
+        let doc: TextDocument = editor.document;
+        if (!doc) {
+            return;
+        }
+
+        if (this.docNeedsHeader(doc)) {
+            await this.insertFileHeader();
+        }
+
+        let findBegin: boolean = false;
+        let beginLine: number = -1;
+        let endLine: number = -1;
+        let changLogLine: number = -1;
+
+        const wsConfig: WorkspaceConfiguration = workspace.getConfiguration(FileHeaderConst.BASE_SETTINGS, doc.uri);
+        const config: IConfig = this.getConfig(wsConfig);
+        const templateConfig: ILangTemplateConfig = this.getTemplateConfig(wsConfig, doc.languageId, doc.fileName);
+
+        if (!templateConfig.body) {
+            return;
+        }
+
+        let authorName: string = config.hasOwnProperty("author") ? config.author : await this.getAuthorName();
+
+        for (let i: number = 0; i < doc.lineCount; i++) {
+            const lineText = doc.lineAt(i).text;
+            if (lineText) {
+                if (!findBegin) {
+                    //先找到开始的标记
+                    if (lineText === templateConfig.headerBegin) {
+                        findBegin = true;
+                        beginLine = i;
+                    }
+                } else {
+                    if (lineText === templateConfig.headerEnd) {
+                        endLine = i;
+                        break;
+                    }
+                    if (lineText && lineText.indexOf(FileHeaderConst.CHANGE_LOG_CAPTION) !== -1) {
+                        changLogLine = i;
+                    }
+                }
+            }
+        }
+
+        const bodyText: string = templateConfig.body.join("\n");
+        let ret = this.doArtTemplateRender(bodyText, authorName, editor, wsConfig, templateConfig, config);
+        ret = "\n\n" + ret;
+
+        const insertRow: number = endLine > 0 ? endLine : 0;
+        const insertCol: number = editor.document.lineAt(insertRow).text.length;
+        const pos = new Position(insertRow, insertCol);
+        editor.selection = new Selection(pos, pos);
+        editor.edit(function (edit) {
+            edit.insert(editor.selection.active, ret);
+        });
     }
 
     private doArtTemplateRender(text: string, authorName: string, editor: TextEditor, wsConfig: WorkspaceConfiguration, templateConfig: ILangTemplateConfig, config: IConfig): string {

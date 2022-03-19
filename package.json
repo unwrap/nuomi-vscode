@@ -23,6 +23,7 @@
   "activationEvents": [
     "onCommand:nuomi-vscode.insertFileHeader",
     "onCommand:nuomi-vscode.insertChangeLog",
+    "onCommand:nuomi-vscode.insertFileBody",
     "onStartupFinished"
   ],
   "main": "./out/extension.js",
@@ -30,11 +31,15 @@
     "commands": [
       {
         "command": "nuomi-vscode.insertFileHeader",
-        "title": "Insert Header Insert"
+        "title": "Insert File Header"
       },
       {
         "command": "nuomi-vscode.insertChangeLog",
         "title": "Insert Header Change Log"
+      },
+      {
+        "command": "nuomi-vscode.insertFileBody",
+        "title": "Insert File Body"
       }
     ],
     "keybindings": [
@@ -45,6 +50,10 @@
       {
         "command": "nuomi-vscode.insertChangeLog",
         "key": "ctrl+alt+C ctrl+alt+C"
+      },
+      {
+        "command": "nuomi-vscode.insertFileBody",
+        "key": "ctrl+alt+B ctrl+alt+B"
       }
     ],
     "configuration": {
