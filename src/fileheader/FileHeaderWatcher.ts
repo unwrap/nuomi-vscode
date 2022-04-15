@@ -4,7 +4,7 @@
  *  @created: 2022-03-09 01:19:39
  *  @description: 插入文件头部信息。
  *  -----
- *  @last-modified: 2022-03-19 10:07:21
+ *  @last-modified: 2022-04-15 23:23:35
  *  @modified: by nuomifans
  *  -----
  *  @Copyright (c) 2022 nuomi.studio
@@ -715,7 +715,7 @@ export class FileHeaderWatcher {
                 this.mapLangConfig({ headerBegin: ';;', headerPrefix: ';', headerEnd: ';;' }, config);
                 break;
             case 'python':
-                this.mapLangConfig({ headerBegin: "'''", headerPrefix: '', headerEnd: "'''" }, config);
+                this.mapLangConfig({ headerBegin: "###", headerPrefix: '#', headerEnd: "###" }, config);
                 break;
             case "xml":
             case "html":
