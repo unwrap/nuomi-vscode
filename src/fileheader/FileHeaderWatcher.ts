@@ -4,7 +4,7 @@
  *  @created: 2022-03-09 01:19:39
  *  @description: 插入文件头部信息。
  *  -----
- *  @last-modified: 2022-04-15 23:23:35
+ *  @last-modified: 2022-04-21 01:03:33
  *  @modified: by nuomifans
  *  -----
  *  @Copyright (c) 2022 nuomi.studio
@@ -413,12 +413,17 @@ export class FileHeaderWatcher {
         if (ignore) {
             return false;
         }
+        const wsConfig: WorkspaceConfiguration = workspace.getConfiguration(FileHeaderConst.BASE_SETTINGS, doc.uri);
+        const templateConfig: ILangTemplateConfig = this.getTemplateConfig(wsConfig, doc.languageId, doc.fileName);
+
+        //如果没有配置模板，且是默认忽略的，则不加文件头信息。
+        if (templateConfig.language === FileHeaderConst.DEFAULT_LANGUAGE && this.docIsDefaultIgnore(doc)) {
+            return false;
+        }
+
         let result: boolean = doc.lineCount <= 1;
         if (!result) {
             result = true;
-            const wsConfig: WorkspaceConfiguration = workspace.getConfiguration(FileHeaderConst.BASE_SETTINGS, doc.uri);
-            const templateConfig: ILangTemplateConfig = this.getTemplateConfig(wsConfig, doc.languageId, doc.fileName);
-
             let findBegin: boolean = false;
             for (let i: number = 0; i < doc.lineCount; i++) {
                 const lineText: string = doc.lineAt(i).text;
@@ -484,6 +489,20 @@ export class FileHeaderWatcher {
                 if (reg.test(pathObj.base) || reg.test(path.join(pathObj.dir, pathObj.base))) {
                     return true;
                 }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 是否默认忽略的文件
+     */
+    private docIsDefaultIgnore(doc: TextDocument) {
+        let pathObj = path.parse(doc.fileName);
+        for (let ige of FileHeaderConst.DEFAULT_IGNORE_LANGUAGE) {
+            let reg: RegExp = new RegExp(ige.replace(".", "\\.").replace("*", ".*"));
+            if (reg.test(pathObj.base) || reg.test(path.join(pathObj.dir, pathObj.base))) {
+                return true;
             }
         }
         return false;
@@ -616,7 +635,7 @@ export class FileHeaderWatcher {
         const templates: ITemplateConfigList = this.getMergedTemplates(wsConfig);
         let def: ILangTemplateConfig = this.getMappableRecord<ILangTemplateConfig>(templates, langId, filename);
         const langConfig: ILangConfig = this.getDefaultLangConfig(langId);
-        if (!def || !def.template) {
+        if (!def) {
             def = templates.find(item => item.language === FileHeaderConst.DEFAULT_LANGUAGE);
             if (!def || !def.template) {
                 def = {
@@ -627,6 +646,9 @@ export class FileHeaderWatcher {
                     template: FileHeaderConst.DEFAULT_TEMPLATE
                 };
             }
+        }
+        if (!def.hasOwnProperty("template")) {
+            def.template = FileHeaderConst.DEFAULT_TEMPLATE;
         }
         if (!def.hasOwnProperty('headerBegin')) {
             def.headerBegin = langConfig.headerBegin;
@@ -696,7 +718,7 @@ export class FileHeaderWatcher {
     }
 
     private getDefaultLangConfig(langId: string) {
-        let config: ILangConfig = { language: '*', headerBegin: '/*', headerPrefix: ' * ', headerEnd: ' */' };
+        let config: ILangConfig = { language: FileHeaderConst.DEFAULT_LANGUAGE, headerBegin: '/*', headerPrefix: ' * ', headerEnd: ' */' };
         switch (langId) {
             case "swift":
                 this.mapLangConfig({ headerBegin: '/**' }, config);

@@ -4,7 +4,7 @@
  *  @created: 2022-03-09 01:13:19
  *  @description: 定义一些常量
  *  -----
- *  @last-modified: 2022-03-19 09:32:47
+ *  @last-modified: 2022-04-21 01:02:23
  *  @modified: by nuomifans
  *  -----
  *  @Copyright (c) 2022 nuomi.studio
@@ -18,6 +18,7 @@ export const CHANGE_LOG_INSERT_COMMAND = BASE_SETTINGS + '.insertChangeLog';
 export const FILE_BODY_INSERT_COMMAND = BASE_SETTINGS + '.insertFileBody';
 
 export const CONFIG_SETTING: string = "config";
+export const DEFAULT_IGNORE_LANGUAGE: Array<string> = ["*.json", "*.md", "*.txt"];
 export const VARIABLES_SETTINGS: string = "variables";
 export const TEMPLATE_SETTINGS: string = 'templates';
 
